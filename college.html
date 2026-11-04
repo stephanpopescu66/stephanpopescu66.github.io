@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>College Folder · Stephan Popescu</title>
+<meta name="description" content="Purdue-era projects by Stephan Popescu: custom guitar, hammer, drawing packages, CATIA, and additive manufacturing research.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="gnav">
+  <div class="gnav-in">
+    <a class="gnav-name" href="index.html">Stephan Popescu</a>
+    <nav>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#built">Projects</a>
+      <a href="index.html#per">Racing</a>
+      <a href="index.html#life">Life</a>
+      <a href="college.html">College</a>
+    </nav>
+    <a class="pill small" href="resume.pdf">Resume</a>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="wrap">
+    <a class="back" href="index.html">‹ Back to home</a>
+    <p class="eyebrow">Purdue · 2018 – 2022</p>
+    <h1 class="headline">The college folder.</h1>
+    <p class="sub">Class projects, research, and the builds that taught me how to make things. Most of this text is from my original portfolio.</p>
+  </div>
+</section>
+
+<!-- GUITAR -->
+<section class="band gray">
+  <div class="wrap">
+    <p class="eyebrow">Custom Electric Guitar</p>
+    <h2 class="headline">Four guitars.<br>Sixteen weeks.</h2>
+    <p class="sub">In a 4-person design group, the goal was to design and build a 6-string electric guitar from scratch while learning stringed-instrument theory and best practices for precision wood manufacturing.</p>
+    <div class="quad" style="margin-top:52px">
+      <img src="media/projects/guitar-templates.jpg" alt="Templates and neck blank" loading="lazy">
+      <img src="media/projects/guitar-cnc.jpg" alt="CNC router cutting the body" loading="lazy">
+      <img src="media/projects/guitar-body.jpg" alt="Maple body blank" loading="lazy">
+      <img src="media/projects/guitar-done.jpg" alt="Finished guitar" loading="lazy">
+    </div>
+    <div class="specs">
+      <div><b>4</b><span>playable guitars from 1 shared design, built like a small production run</span></div>
+      <div><b>2 pickups</b><span>with a 3-way switch, plus volume and tone knobs</span></div>
+      <div><b>Maple</b><span>CNC-contoured neck and body, laser-cut acrylic pickguard</span></div>
+    </div>
+    <details class="dive">
+      <summary>How we built it</summary>
+      <div class="dive-body">
+        <p>Deliverables were a Gantt chart, a per-guitar budget, and 4 playable guitars that shared 1 design, so we got real experience with a mass-manufacturing process. My role was to design and make the neck for each guitar, and I also helped design and make the body.</p>
+        <p><b>Prototypes.</b> We cut the first parts from foam-board body blanks and pine neck blanks. In V-Carve, I programmed 2D and 3D toolpaths with surface finish in mind. Getting the toolpaths right was the slowest part, because every production part had to be identical. We laser-cut a cardboard pickguard to check fit and style.</p>
+        <p><b>Bodies.</b> The CNC cut the pockets. A hand rasp shaped the body and arm cutouts, an edge router made the edge radius, and then we did many rounds of sanding and clear coat.</p>
+        <p><b>Necks.</b> These were harder, because the stock had to be machined from both sides. I added 2 alignment pins so we could find zero again after flipping it. The CNC cut the back profile, truss-rod slot, headstock, and tuner holes. With a ½ in ball end mill, the cycle times were very long, so I made the stepover bigger and smoothed the neck by hand. Then we put in the frets and trimmed them.</p>
+        <p><b>Finish.</b> We laser-cut the acrylic pickguards, wired the pickups to the switch and knobs, and then installed hardware, tuned, intonated, and played. Mind the high E string. I snapped it while intonating.</p>
+        <p class="muted">Stock: 4 × 30 × 0.75 in maple (neck), 15 × 20 × 1.5 in maple (body). Machines: planer, CNC gantry router, fillet router, laser cutter.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="archive">
+
+      <article class="tile span2">
+        <div class="tile-text">
+          <p class="tile-eyebrow">Manufacturing Systems</p>
+          <h3>Metal hammer.</h3>
+          <p>A 6061 aluminum handle turned on the manual and CNC lathe, and a 1018 hot-rolled steel head made on CNC and manual mills. I wrote the G-code to engrave our initials on the 5-axis Hurco.</p>
+        </div>
+        <div class="tile-media"><img src="media/college/hammer.jpg" alt="Steel hammer head engraved SNP" loading="lazy"></div>
+        <details class="dive in-tile">
+          <summary>Learn more</summary>
+          <div class="dive-body">
+            <p><b>Handle:</b> 6061 aluminum, 1 in round stock. Horizontal bandsaw, manual lathe, CNC lathe.</p>
+            <p><b>Head:</b> 1018 hot-rolled steel. Horizontal grinder, 5-axis CNC mill, manual mill.</p>
+            <p><b>Engraving:</b> The program used machine commands (M3, M5, M8, M10) and G-code for circular interpolation, absolute and incremental positioning, and linear moves in XYZ (G90, G91, G01, G02, G03).</p>
+            <div class="pair">
+              <img src="media/college/hammer-2.jpg" alt="Finished hammer" loading="lazy">
+              <img src="media/college/gcode.jpg" alt="G-code program" loading="lazy">
+            </div>
+          </div>
+        </details>
+      </article>
+
+      <article class="tile">
+        <div class="tile-text">
+          <p class="tile-eyebrow">Research</p>
+          <h3>Additive manufacturing research.</h3>
+          <p>As an undergraduate research assistant, I tested an algorithm that corrects print distortion and poor quality, and compared the results to control prints.</p>
+        </div>
+        <details class="dive in-tile">
+          <summary>Learn more</summary>
+          <div class="dive-body">
+            <p>I designed simple and complex test geometry and built a library of parts for distortion and surface-finish tests. For each part I made a detailed drawing with its critical dimensions, then measured the prints with a digital caliper and a 3D surface profiler. I used a SolidWorks design table driven from Excel to control revisions, so I changed dimensions in one sheet and not by hand.</p>
+          </div>
+        </details>
+      </article>
+
+      <article class="tile">
+        <div class="tile-text">
+          <p class="tile-eyebrow">CATIA V5</p>
+          <h3>A skateboard, built to be edited.</h3>
+          <p>An assembly designed so anyone can open it and change dimensions. Every part follows a naming system, and every feature has a clear name.</p>
+        </div>
+        <div class="tile-media white"><img src="https://static.wixstatic.com/media/add084_a4ce6eeb0e374b2d8d20b08df1cde268f000.jpg" alt="CATIA skateboard assembly" loading="lazy"></div>
+      </article>
+
+      <article class="tile">
+        <div class="tile-text">
+          <p class="tile-eyebrow">Drawing package</p>
+          <h3>Injection molding machine.</h3>
+          <p>A machine that separates the two mold halves, ejects the part with ejector pins, and moves it to a different location. It includes a BOM, standard hardware, sheet metal, surface-finish marks, and ASME Y14.5 GD&amp;T.</p>
+        </div>
+      </article>
+
+      <article class="tile">
+        <div class="tile-text">
+          <p class="tile-eyebrow">Drawing package</p>
+          <h3>Simple machines.</h3>
+          <p>A Rube Goldberg–style machine with at least 3 simple machines, 2 drive systems, 2 bearing types, and an electric motor. The main assembly drawing explains how it works and how it meets each requirement.</p>
+        </div>
+      </article>
+
+      <article class="tile">
+        <div class="tile-text">
+          <p class="tile-eyebrow">Drawing package</p>
+          <h3>Arbor press.</h3>
+          <p>A fully designed arbor press, with engineering change orders (ECOs), ASME Y14.5 GD&amp;T, and BOMs.</p>
+        </div>
+      </article>
+
+      <article class="tile">
+        <div class="tile-text">
+          <p class="tile-eyebrow">Internships</p>
+          <h3>Before Lucid.</h3>
+          <p>Herman Miller, Product Development, Seating (2021). Subaru of Indiana, Advanced Manufacturing (2020). GE Aviation, Manufacturing/Quality Co-op (2020). HDR Engineering, Mechanical Intern (2019).</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">© 2026 Stephan Popescu. Built from scratch.</div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
