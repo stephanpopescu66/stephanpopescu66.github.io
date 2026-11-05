@@ -1,1 +1,4 @@
 .DS_Store
+*.bak
+HANDOFF.md
+DESIGN_RULES.md
