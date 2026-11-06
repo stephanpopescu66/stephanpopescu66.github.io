@@ -19,7 +19,7 @@ const me = $('#me');
 let ticking = false;
 function setP() {
   const range = window.innerWidth < 700 ? 140 : 260;
-  const p = reduce ? (scrollY > 40 ? 1 : 0) : Math.min(1, Math.max(0, scrollY / range));
+  const p = document.body.dataset.view ? 1 : reduce ? (scrollY > 40 ? 1 : 0) : Math.min(1, Math.max(0, scrollY / range));
   document.documentElement.style.setProperty('--p', p.toFixed(3));
   me.classList.toggle('small', p > 0.34);
   ticking = false;
@@ -43,20 +43,40 @@ document.fonts?.ready.then(placeMe);
 
 /* ---------- Active chapter in the nav ---------- */
 const navLinks = $$('.gnav nav a');
-const chapter = { archer: 'work', lucid: 'work', milwaukee: 'work', tools: 'tools', hands: 'hands', per: 'per', outside: 'outside' };
+const chapter = { archer: 'work', lucid: 'work', milwaukee: 'work', tools: 'tools', outside: 'outside' };
 const nio = new IntersectionObserver((entries) => {
+  if (document.body.dataset.view) return;
   for (const e of entries) if (e.isIntersecting) {
     const c = chapter[e.target.id];
     navLinks.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + c));
   }
 }, { rootMargin: '-45% 0px -50% 0px' });
 Object.keys(chapter).forEach((id) => { const s = document.getElementById(id); if (s) nio.observe(s); });
-// "Work" jumps to the first work section on the page.
-$('.gnav nav a[href="#work"]').addEventListener('click', (ev) => {
-  const first = ['archer', 'lucid', 'milwaukee'].map((id) => document.getElementById(id))
-    .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
-  ev.preventDefault(); first.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
-});
+
+/* ---------- Tab views: Hands-on, Racing, Outside open on their own ----------
+   The main page ends after Projects. #hands, #per, #outside show only that section. */
+const TABS = ['hands', 'per'];
+function route() {
+  const id = decodeURIComponent(location.hash.slice(1));
+  const was = document.body.dataset.view;
+  if (TABS.includes(id)) {
+    document.body.dataset.view = id;
+    window.scrollTo(0, 0);
+    navLinks.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + id));
+    document.title = { hands: 'Hands-on', per: 'Racing' }[id] + ' · Stephan Popescu';
+  } else {
+    delete document.body.dataset.view;
+    document.title = 'Stephan Popescu';
+    navLinks.forEach((a) => a.classList.remove('on'));
+    if (was) {
+      const t = id && document.getElementById(id);
+      if (t) t.scrollIntoView(); else window.scrollTo(0, 0);
+    }
+  }
+  setP();
+}
+addEventListener('hashchange', route);
+route();
 
 /* ---------- PersonalOS phones: page by whole phones ---------- */
 $$('.phones').forEach((ph) => {
@@ -158,7 +178,7 @@ lb.addEventListener('touchend', (e) => { if (tx === null) return; const d = e.ch
 const rio = new IntersectionObserver((entries) => {
   for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); }
 }, { threshold: 0.12 });
-$$('.headline, .sub, .hero-img, .tile, .wide-media, .mosaic, .reel, .quad, .college-link, .statement, .job, .st-media, .st-copy, .about-collage, .car-shot').forEach((el) => {
+$$('.headline, .sub, .hero-img, .tile, .wide-media, .mosaic, .reel, .quad, .more-tile, .statement, .job, .st-media, .st-copy, .about-collage, .car-shot').forEach((el) => {
   el.classList.add('reveal'); rio.observe(el);
 });
 
@@ -205,13 +225,21 @@ function startEdit() {
     const raw = await (await fetch('index.html', { cache: 'no-store' })).text();
     const doc = new DOMParser().parseFromString(raw, 'text/html');
     const src = [...doc.querySelectorAll(EDIT_SEL)];
-    if (src.length !== els.length) { status('page changed on disk, reload'); return; }
-    let n = 0;
-    els.forEach((el, i) => {
+    // Match each changed element to the file by its original text, not by position,
+    // so a layout change on disk can't put an edit in the wrong place.
+    const norm = (h) => h.replace(/\u00a0|&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+    const used = new Set();
+    let n = 0, lost = 0;
+    els.forEach((el) => {
       if (!el.classList.contains('changed')) return;
-      src[i].innerHTML = el.innerHTML.replace(/ /g, ' ').replace(/<br>$/, '');
+      const want = norm(el.dataset.orig);
+      const j = src.findIndex((x, k) => !used.has(k) && x.tagName === el.tagName && norm(x.innerHTML) === want);
+      if (j < 0) { lost++; return; }
+      used.add(j);
+      src[j].innerHTML = el.innerHTML.replace(/\u00a0/g, ' ').replace(/<br>$/, '');
       n++;
     });
+    if (lost) { status(`${lost} edit(s) don't match the file. Copy them, reload, paste.`); return; }
     const html = ('<!doctype html>\n' + doc.documentElement.outerHTML).replace(/\s+<\/body>/, '\n</body>') + '\n';
     try {
       const r = await fetch('/__save', { method: 'POST', headers: { 'Content-Type': 'text/html' }, body: html });
