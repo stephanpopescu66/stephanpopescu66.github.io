@@ -540,3 +540,6 @@ body[data-view="hands"] #hands, body[data-view="per"] #per { display: block; min
 @media (max-width: 760px) { .more-grid { grid-template-columns: 1fr; } .more-tile { aspect-ratio: 4 / 3; } }
 @media (prefers-reduced-motion: reduce) { .more-tile img, .more-tile video, .more-cap p { transition: none; } .more-tile:hover img, .more-tile:hover video { transform: none; } }
 body.editing .more-cap p { max-height: none; opacity: 1; margin-top: 6px; }
+
+/* college guitar spec lines */
+.specs { display: grid; gap: 6px; margin-top: 24px; }
