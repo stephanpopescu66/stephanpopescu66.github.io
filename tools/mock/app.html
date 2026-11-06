@@ -1,0 +1,155 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+:root{--bg:#0d1533;--card:#141c42;--card2:#182354;--line:#26306a;--tx:#f7f8fc;--mu:#8a93b5;--mu2:#aab3d5;--teal:#1fe2d2;--red:#ff4d6b;--lime:#9de647;--ind:#6e7bff;--org:#ff7817;--mag:#ff4dd2;--yel:#ffcc35;--vio:#9b6bff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:390px;height:844px;overflow:hidden;position:relative;background:var(--bg);color:var(--tx);font-family:-apple-system,"SF Pro Display","SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{background:radial-gradient(120% 60% at 80% -10%,#24307a 0,transparent 60%),radial-gradient(90% 50% at -10% 110%,#3a1d6b 0,transparent 60%),var(--bg)}
+.sb{height:54px;display:flex;align-items:center;justify-content:space-between;padding:14px 32px 0 38px;font:600 17px -apple-system}
+.sb i{display:inline-flex;gap:6px;align-items:center}
+.sb b{display:inline-block;width:25px;height:12px;border:1.5px solid #fff9;border-radius:4px;position:relative}
+.sb b:after{content:"";position:absolute;inset:1.5px;right:5px;background:#fff;border-radius:1.5px}
+.sig{display:inline-flex;gap:2px;align-items:flex-end}.sig s{width:3px;background:#fff;border-radius:1px}
+.pg{padding:6px 20px 0}
+.top{display:flex;justify-content:space-between;align-items:center;margin:6px 0 14px}
+.top h1{font-size:34px;font-weight:700;letter-spacing:-.5px}
+.av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#6e7bff,#1fe2d2);display:grid;place-items:center;font-weight:700;font-size:15px}
+.card{background:linear-gradient(180deg,#18215099,#141c42cc);border:1px solid #ffffff14;border-radius:22px;padding:18px;margin-bottom:12px}
+.ey{font-size:12px;letter-spacing:2.2px;color:var(--mu2);font-weight:600;text-transform:uppercase}
+.h{font-size:22px;font-weight:700;margin-top:4px;letter-spacing:-.3px}
+.row{display:flex;justify-content:space-between;align-items:flex-start}
+.chip{font-size:13px;font-weight:700;padding:6px 11px;border-radius:999px}
+.chip.ok{background:#1fe2d222;color:var(--teal)}.chip.bad{background:#ff4d6b26;color:var(--red)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.stat{background:#0d153399;border-radius:14px;padding:10px 12px}
+.stat p{font-size:11px;color:var(--mu);letter-spacing:.4px}.stat b{font-size:19px;display:block;margin-top:2px}
+svg text{font-family:-apple-system,system-ui;fill:var(--mu2)}
+.tabs{position:absolute;left:14px;right:14px;bottom:26px;height:64px;border-radius:32px;background:#141c42ee;border:1px solid #ffffff1a;display:flex;justify-content:space-around;align-items:center;backdrop-filter:blur(10px)}
+.tabs span{font-size:11px;color:var(--mu);display:flex;flex-direction:column;align-items:center;gap:4px}
+.tabs span:before{content:"";width:22px;height:22px;border-radius:7px;background:currentColor;opacity:.55}
+.tabs .on{color:var(--teal)}.tabs .on:before{opacity:1}
+.list .it{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid #ffffff10}
+.list .it:first-child{border-top:0}
+.dot{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:13px;font-weight:700;color:#0d1533}
+.it .nm{flex:1}.it .nm b{display:block;font-size:15px;font-weight:600}.it .nm small{font-size:12px;color:var(--mu)}
+.it .amt{font-weight:600;font-size:15px}
+.bar{height:6px;border-radius:3px;background:#ffffff14;overflow:hidden;margin-top:7px}.bar i{display:block;height:100%;border-radius:3px}
+.ex{background:#0d153399;border-radius:16px;padding:13px 14px;margin-bottom:9px;display:flex;gap:12px}
+.ex .n{color:var(--mu);font-weight:600;width:16px}.ex b{font-size:16px}.ex p{font-size:13px;color:var(--mu2);margin-top:3px}
+.ex em{font-size:12px;color:var(--mu);display:block;margin-top:3px}
+</style></head><body>
+<div class="sb"><span>9:41</span><i><span class="sig"><s style="height:5px"></s><s style="height:8px"></s><s style="height:11px"></s><s style="height:13px"></s></span><b></b></i></div>
+<div class="pg" id="pg"></div>
+<div class="tabs" id="tabs"><span>Today</span><span>Money</span><span>Health</span><span>Train</span></div>
+<script>
+const S=new URLSearchParams(location.search).get('s')||'pace';
+const pg=document.getElementById('pg');
+const tabOn={pace:1,flow:1,cash:1,worth:1,ready:2,train:3}[S];
+document.querySelectorAll('#tabs span')[tabOn].classList.add('on');
+const $=(h)=>pg.insertAdjacentHTML('beforeend',h);
+const k=(v)=>'$'+(v>=1000?(v/1000).toFixed(1)+'K':Math.round(v));
+const money=(v)=>'$'+Math.round(v).toLocaleString();
+
+if(S==='pace'){
+  $(`<div class="top"><h1>Money</h1><div class="av">SP</div></div>`);
+  const days=30,today=22,budget=9400,warn=8600,bills=3870;
+  // cumulative spend: rent+bills early, steady daily, a couple of spikes
+  const daily=[3420,85,140,60,210,95,40,330,120,75,160,45,90,520,110,65,140,85,230,60,95,135];
+  let c=0;const cum=daily.map(d=>c+=d);
+  const spent=cum[today-1];
+  const rate=(spent-cum[2])/(today-3), proj=spent+rate*(days-today);
+  $(`<div class="card"><div class="row"><div><p class="ey">Spend control</p><p class="h">November spend pace</p></div><span class="chip ok">On pace</span></div>
+  <div class="stats"><div class="stat"><p>Spent</p><b>${k(spent)}</b></div><div class="stat"><p>Month end</p><b>${k(proj)}</b></div><div class="stat"><p>Left / day</p><b>${money((budget-spent)/(days-today))}</b></div></div>
+  <svg id="ch" width="316" height="300" style="margin-top:12px;margin-left:-2px"></svg></div>`);
+  const W=316,H=300,L=42,R=14,T=14,B=26,ymax=11000;
+  const x=d=>L+(d-1)/(days-1)*(W-L-R), y=v=>T+(1-v/ymax)*(H-T-B);
+  let g='';
+  for(const v of [0,2750,5500,8250,11000]) g+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="#ffffff12"/><text x="${L-8}" y="${y(v)+4}" font-size="11" text-anchor="end">${k(v)}</text>`;
+  for(const d of [1,6,11,16,21,26,30]) g+=`<text x="${x(d)}" y="${H-6}" font-size="11" text-anchor="middle">${d}</text>`;
+  g+=`<rect x="${L}" y="${y(warn)}" width="${W-L-R}" height="${y(bills)-y(warn)}" fill="#1fe2d214"/>`;
+  g+=`<line x1="${L}" x2="${W-R}" y1="${y(budget)}" y2="${y(budget)}" stroke="#ff4d6b" stroke-width="2" stroke-dasharray="7 6"/><text x="${W-R}" y="${y(budget)-6}" font-size="11" text-anchor="end" style="fill:#ff4d6b">Budget</text>`;
+  g+=`<line x1="${L}" x2="${W-R}" y1="${y(warn)}" y2="${y(warn)}" stroke="#aab3d5" stroke-width="1.5"/><text x="${W-R}" y="${y(warn)+15}" font-size="11" text-anchor="end">Warn</text>`;
+  g+=`<line x1="${L}" x2="${W-R}" y1="${y(bills)}" y2="${y(bills)}" stroke="#ff4d6b99" stroke-width="1.5"/><text x="${W-R}" y="${y(bills)-6}" font-size="11" text-anchor="end">Bills</text>`;
+  // ideal pace
+  g+=`<line x1="${x(1)}" y1="${y(bills)}" x2="${x(days)}" y2="${y(budget)}" stroke="#ffffff30" stroke-width="1.5" stroke-dasharray="2 5"/>`;
+  const pts=cum.map((v,i)=>`${x(i+1)},${y(v)}`).join(' ');
+  g+=`<defs><linearGradient id="fa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1fe2d2" stop-opacity=".35"/><stop offset="1" stop-color="#1fe2d2" stop-opacity="0"/></linearGradient></defs>`;
+  g+=`<polygon points="${x(1)},${y(0)} ${pts} ${x(today)},${y(0)}" fill="url(#fa)"/>`;
+  g+=`<polyline points="${pts}" fill="none" stroke="#1fe2d2" stroke-width="3" stroke-linejoin="round"/>`;
+  g+=`<line x1="${x(today)}" y1="${y(spent)}" x2="${x(days)}" y2="${y(proj)}" stroke="#ffe7c2" stroke-width="2.5" stroke-dasharray="7 6"/>`;
+  g+=`<circle cx="${x(today)}" cy="${y(spent)}" r="7" fill="#1fe2d2" stroke="#0d1533" stroke-width="3"/>`;
+  g+=`<line x1="${x(today)}" x2="${x(today)}" y1="${y(spent)+8}" y2="${y(0)}" stroke="#1fe2d255" stroke-dasharray="2 3"/>`;
+  g+=`<text x="${x(today)-10}" y="${y(spent)-16}" font-size="12" text-anchor="end" style="fill:#f7f8fc;font-weight:700">Today ${k(spent)}</text>`;
+  document.getElementById('ch').innerHTML=g;
+  $(`<div class="card list" style="padding:8px 18px">
+   ${[['Dining','#ff7817',1180,1300],['Shopping','#6e7bff',960,1100],['Groceries','#9de647',610,750],['Travel','#1fe2d2',420,900]].map(([n,c,s,b])=>`<div class="it"><div class="dot" style="background:${c}">${n[0]}</div><div class="nm"><b>${n}</b><div class="bar"><i style="width:${s/b*100}%;background:${c}"></i></div></div><div class="amt">${money(s)}<small style="color:var(--mu);font-weight:400"> / ${k(b)}</small></div></div>`).join('')}</div>`);
+}
+
+if(S==='flow'){
+  $(`<div class="top"><h1>Money</h1><div class="av">SP</div></div>`);
+  $(`<div class="card"><p class="ey">Where it goes</p><p class="h">October money flow</p><p style="color:var(--mu);font-size:13px;margin-top:4px">4 accounts → 8 categories, combined</p><svg id="sk" width="316" height="470" style="margin:10px 0 0 -2px"></svg></div>`);
+  const src=[['Sapphire','#6e7bff',3150],['Amex Gold','#ffcc35',1480],['Checking','#1fe2d2',4520],['Apple Card','#f7f8fc',610]];
+  const dst=[['Rent & bills','#8a93b5',3870],['Dining','#ff7817',1240],['Shopping','#6e7bff',1060],['Travel','#1fe2d2',980],['Groceries','#9de647',720],['Fitness','#ff4dd2',420],['Car','#ffcc35',840],['Other','#9b6bff',630]];
+  // flows matrix (src x dst)
+  const F=[[0,820,640,980,0,180,260,270],[0,420,0,0,720,120,80,140],[3870,0,250,0,0,0,280,120],[0,0,170,0,0,120,220,100]];
+  const W=316,H=470,gap=8,x0=8,x1=W-112,nw=12;
+  const tot=dst.reduce((a,d)=>a+d[2],0), sc=(H-gap*7)/tot;
+  let ys=[],yy=0;src.forEach((s,i)=>{const h=F[i].reduce((a,b)=>a+b,0)*sc;ys.push([yy,h]);yy+=h+ (H-gap*7-tot*sc+gap*7- 0)/3*0 + gap*7/3;});
+  // recompute src spacing to fill height
+  const sTot=src.map((s,i)=>F[i].reduce((a,b)=>a+b,0)*sc); const sGap=(H-sTot.reduce((a,b)=>a+b,0))/(src.length-1);
+  yy=0; ys=sTot.map(h=>{const r=[yy,h];yy+=h+sGap;return r;});
+  let yd=[],y2=0;dst.forEach(d=>{const h=d[2]*sc;yd.push([y2,h]);y2+=h+gap;});
+  let g='',so=ys.map(r=>r[0]),dof=yd.map(r=>r[0]);
+  src.forEach((s,i)=>F[i].forEach((v,j)=>{if(!v)return;const h=v*sc,a=so[i],b=dof[j];so[i]+=h;dof[j]+=h;
+    const xa=x0+nw,xb=x1,m=(xa+xb)/2;
+    g+=`<path d="M${xa},${a} C${m},${a} ${m},${b} ${xb},${b} L${xb},${b+h} C${m},${b+h} ${m},${a+h} ${xa},${a+h}Z" fill="${dst[j][1]}" opacity=".38"/>`;}));
+  src.forEach((s,i)=>{g+=`<rect x="${x0}" y="${ys[i][0]}" width="${nw}" height="${ys[i][1]}" rx="4" fill="${s[1]}"/>`;});
+  dst.forEach((d,j)=>{g+=`<rect x="${x1}" y="${yd[j][0]}" width="${nw}" height="${yd[j][1]}" rx="4" fill="${d[1]}"/><text x="${x1+20}" y="${yd[j][0]+yd[j][1]/2-1}" font-size="13" style="fill:#f7f8fc;font-weight:600">${d[0]}</text><text x="${x1+20}" y="${yd[j][0]+yd[j][1]/2+14}" font-size="11.5">${money(d[2])}</text>`;});
+  src.forEach((s,i)=>{g+=`<text x="${x0+nw+8}" y="${ys[i][0]+16}" font-size="12.5" style="fill:#f7f8fc;font-weight:700;paint-order:stroke;stroke:#0d1533;stroke-width:4px">${s[0]}</text>`;});
+  document.getElementById('sk').innerHTML=g;
+}
+
+if(S==='cash'){
+  $(`<div class="top"><h1>Money</h1><div class="av">SP</div></div>`);
+  const m=['Jun','Jul','Aug','Sep','Oct','Nov'],inn=[11200,11150,13900,11200,11300,7480],out=[10480,9620,12250,9940,10380,6840];
+  $(`<div class="card"><p class="ey">Cash flow</p><p class="h">Money in vs. out</p>
+  <div class="stats"><div class="stat"><p>In, 6 mo</p><b>${k(inn.reduce((a,b)=>a+b))}</b></div><div class="stat"><p>Out, 6 mo</p><b>${k(out.reduce((a,b)=>a+b))}</b></div><div class="stat"><p>Saved</p><b style="color:var(--teal)">${k(inn.reduce((a,b)=>a+b)-out.reduce((a,b)=>a+b))}</b></div></div>
+  <svg id="cf" width="316" height="290" style="margin-top:12px;margin-left:-2px"></svg></div>`);
+  const W=316,H=290,L=48,B=26,T=16,ym=15000,bw=16,y=v=>T+(1-v/ym)*(H-T-B);let g='';
+  for(const v of [0,5000,10000,15000])g+=`<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="#ffffff12"/><text x="${L-8}" y="${y(v)+4}" font-size="11" text-anchor="end">${k(v)}</text>`;
+  m.forEach((n,i)=>{const cx=L+24+i*(W-L-40)/5;g+=`<rect x="${cx-bw-2}" y="${y(inn[i])}" width="${bw}" height="${y(0)-y(inn[i])}" rx="5" fill="#1fe2d2" opacity="${i==5?.55:1}"/><rect x="${cx+2}" y="${y(out[i])}" width="${bw}" height="${y(0)-y(out[i])}" rx="5" fill="#ff4d6b" opacity="${i==5?.55:1}"/><text x="${cx}" y="${H-6}" font-size="11" text-anchor="middle">${n}</text><text x="${cx}" y="${y(Math.max(inn[i],out[i]))-6}" font-size="10.5" text-anchor="middle" style="fill:${inn[i]>out[i]?'#1fe2d2':'#ff4d6b'}">+${k(inn[i]-out[i])}</text>`;});
+  document.getElementById('cf').innerHTML=g;
+  $(`<div class="card list" style="padding:8px 18px">${[['Paycheck','Archer · Nov 15','#1fe2d2','+$3,740'],['Rent','Checking · Nov 1','#8a93b5','−$3,838'],['Sapphire payment','Due Nov 24 · autopay set','#6e7bff','−$2,912'],['Amex Gold','Due Nov 28','#ffcc35','−$1,406']].map(([a,b,c,d])=>`<div class="it"><div class="dot" style="background:${c}">${a[0]}</div><div class="nm"><b>${a}</b><small>${b}</small></div><div class="amt" style="color:${d[0]=='+'?'var(--teal)':'var(--tx)'}">${d}</div></div>`).join('')}</div>`);
+}
+
+if(S==='worth'){
+  $(`<div class="top"><h1>Wealth</h1><div class="av">SP</div></div>`);
+  const n=26,pts=[];let v=62000;for(let i=0;i<n;i++){v+=1900+Math.sin(i*1.3)*2600+(i==9?-5200:0);pts.push(v);}
+  $(`<div class="card"><p class="ey">Net worth</p><p class="h" style="font-size:34px">${money(pts[n-1])}</p><p style="color:var(--teal);font-weight:600;font-size:14px;margin-top:2px">▲ ${money(pts[n-1]-pts[n-14])} in 6 months</p><svg id="nw" width="316" height="210" style="margin:14px 0 0 -2px"></svg>
+  <div style="display:flex;gap:6px;margin-top:8px">${['1M','6M','1Y','All'].map((t,i)=>`<span class="chip" style="background:${i==2?'#1fe2d222':'#ffffff0d'};color:${i==2?'var(--teal)':'var(--mu2)'};flex:1;text-align:center">${t}</span>`).join('')}</div></div>`);
+  const W=316,H=210,mn=Math.min(...pts)-4000,mx=Math.max(...pts)+3000,x=i=>i/(n-1)*W,y=q=>8+(1-(q-mn)/(mx-mn))*(H-16);
+  const p=pts.map((q,i)=>`${x(i)},${y(q)}`).join(' ');
+  document.getElementById('nw').innerHTML=`<defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#6e7bff" stop-opacity=".5"/><stop offset="1" stop-color="#6e7bff" stop-opacity="0"/></linearGradient><linearGradient id="s" x1="0" x2="1"><stop offset="0" stop-color="#6e7bff"/><stop offset="1" stop-color="#1fe2d2"/></linearGradient></defs><polygon points="0,${H} ${p} ${W},${H}" fill="url(#g)"/><polyline points="${p}" fill="none" stroke="url(#s)" stroke-width="3" stroke-linejoin="round"/><circle cx="${x(n-1)-4}" cy="${y(pts[n-1])}" r="6" fill="#1fe2d2" stroke="#0d1533" stroke-width="3"/>`;
+  $(`<div class="card list" style="padding:8px 18px">${[['Brokerage','Fidelity · 2 accounts','#6e7bff',0.38],['401(k)','Archer plan','#1fe2d2',0.24],['Savings','Wealthfront','#9de647',0.21],['Checking','Chase','#ffcc35',0.09],['RSUs','Vested','#ff4dd2',0.08]].map(([a,b,c,f])=>`<div class="it"><div class="dot" style="background:${c}">${a[0]}</div><div class="nm"><b>${a}</b><small>${b}</small></div><div class="amt">${money(pts[n-1]*f)}</div></div>`).join('')}</div>`);
+}
+
+if(S==='ready'){
+  $(`<div class="top"><h1>Health</h1><div class="av">SP</div></div>`);
+  const sc=84;const C=2*Math.PI*78;
+  $(`<div class="card" style="text-align:center"><p class="ey">Readiness · Sun Nov 22</p>
+  <svg width="200" height="200" style="margin:14px auto 4px;display:block"><defs><linearGradient id="r" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#1fe2d2"/><stop offset="1" stop-color="#9de647"/></linearGradient></defs>
+   <circle cx="100" cy="100" r="78" fill="none" stroke="#ffffff12" stroke-width="16"/>
+   <circle cx="100" cy="100" r="78" fill="none" stroke="url(#r)" stroke-width="16" stroke-linecap="round" stroke-dasharray="${C*sc/100} ${C}" transform="rotate(-90 100 100)"/>
+   <text x="100" y="108" text-anchor="middle" font-size="54" style="fill:#f7f8fc;font-weight:700">${sc}</text><text x="100" y="134" text-anchor="middle" font-size="13">Prime · go hard</text></svg>
+  <p style="color:var(--mu2);font-size:14px;line-height:1.4">Slept 7h 52m and HRV is above your 30-day baseline. Today is a good day for heavy lifts.</p></div>`);
+  $(`<div class="card list" style="padding:8px 18px">${[['Sleep','7h 52m · base 7h 10m','#6e7bff',40,.92],['HRV','68 ms · base 58','#1fe2d2',25,.88],['Resting HR','49 bpm · base 52','#ff4d6b',20,.85],['Fueling','2,640 kcal · 168 g protein','#9de647',10,.7],['Load','Acute : chronic 1.05','#ffcc35',5,.8]].map(([a,b,c,w,f])=>`<div class="it"><div class="dot" style="background:${c}">${w}</div><div class="nm"><b>${a}</b><small>${b}</small><div class="bar"><i style="width:${f*100}%;background:${c}"></i></div></div></div>`).join('')}</div>`);
+}
+
+if(S==='train'){
+  $(`<div class="top"><h1>Train</h1><div class="av">SP</div></div>`);
+  $(`<div class="card" style="background:linear-gradient(135deg,#1fe2d233,#6e7bff33);"><div class="row"><div><p class="ey">Today · readiness 84</p><p class="h" style="font-size:25px">Lower body strength</p></div><span class="chip ok">Prime</span></div>
+  <p style="color:var(--mu2);font-size:14px;margin-top:8px">55 min · 6:30 pm · after your last meeting</p>
+  <div class="stats"><div class="stat"><p>Run</p><b>2/2</b></div><div class="stat"><p>Strength</p><b>1/2</b></div><div class="stat"><p>Swim</p><b>0/1</b></div></div></div>`);
+  [['Back squat','4 × 5 · 245 lb','+10 lb from last week, HRV is up'],['Romanian deadlift','3 × 8 · 185 lb','Hinge, slow on the way down'],['Bulgarian split squat','3 × 10 each · 50 lb DBs','Front knee over toes'],['Walking lunge','2 × 20 steps · 40 lb','Finisher'],['Hip mobility flow','8 min','Cool down']].forEach(([a,b,c],i)=>$(`<div class="ex"><span class="n">${i+1}</span><div><b>${a}</b><p>${b}</p><em>${c}</em></div></div>`));
+}
+</script></body></html>
